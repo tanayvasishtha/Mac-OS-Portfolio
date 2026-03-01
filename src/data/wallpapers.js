@@ -46,7 +46,7 @@ export const wallpapers = [
     id: "wallpaper-video-1",
     label: "Video 1",
     type: "video",
-    src: "/wallpapers/VidWallpaper1.mp4",
+    src: "/wallpapers/Vidwallpaper2.mp4",
   },
   {
     id: "wallpaper-video-2",
