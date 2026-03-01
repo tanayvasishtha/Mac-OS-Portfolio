@@ -1,0 +1,15 @@
+export const dockItems = [
+  { id: "finder", title: "Finder", iconImage: "/images/finder.png", type: "finder", externalUrl: null },
+  { id: "projects", title: "Projects", iconImage: "/icons/work.svg", type: "app", componentId: "projects" },
+  { id: "gallery", title: "Photos", iconImage: "/images/photos.png", type: "app", componentId: "gallery" },
+  { id: "skills", title: "Folder", iconImage: "/images/folder.png", type: "app", componentId: "skills" },
+  { id: "terminal", title: "Terminal", iconImage: "/images/terminal.png", type: "app", componentId: "terminal" },
+  { id: "notepad", title: "Notes", iconImage: "/images/notepad.png", type: "app", componentId: "notepad" },
+  { id: "calculator", title: "Calculator", iconImage: "/images/calculator.png", type: "app", componentId: "calculator" },
+  { id: "spotify", title: "Spotify", iconImage: "/images/spotify.png", type: "app", componentId: "spotify" },
+  { id: "trash", title: "Trash", iconImage: "/images/trash.png", type: "trash", externalUrl: null },
+  { id: "launchpad", title: "Launchpad", iconImage: null, type: "launchpad", externalUrl: null },
+  { id: "settings", title: "System Settings", iconImage: "/images/settings.png", type: "app", componentId: "settings" },
+  { id: "github", title: "GitHub", iconImage: "/icons/github.svg", type: "external", externalUrl: "https://github.com" },
+  { id: "linkedin", title: "LinkedIn", iconImage: "/icons/linkedin.svg", type: "external", externalUrl: "https://linkedin.com" },
+];
