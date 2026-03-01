@@ -64,14 +64,15 @@ export function useWindowManager() {
   }, []);
 
   const focusWindow = useCallback((id) => {
+    let newZ = 0;
     setOpenWindows((prev) => {
       const maxZ = Math.max(...prev.map((w) => w.zIndex), WINDOW_Z_BASE);
-      const newZ = maxZ + 1;
-      setNextZIndex(newZ + 1);
+      newZ = maxZ + 1;
       return prev.map((w) =>
         w.id === id ? { ...w, zIndex: newZ } : w
       );
     });
+    setNextZIndex(newZ + 1);
     setFocusedId(id);
   }, []);
 

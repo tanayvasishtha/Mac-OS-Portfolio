@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useWindowManagerContext } from "../../context/WindowManagerContext";
@@ -13,7 +13,7 @@ const desktopItems = [
     title: "Resume.pdf",
     icon: null,
     iconImage: "/icons/file.svg",
-    appId: "contact",
+    appId: "resume",
   },
 ];
 
@@ -138,16 +138,20 @@ export function Desktop() {
     };
   }, []);
 
-  const openApp = (appId) => {
-    const map = {
-      projects: { id: "projects", title: "Projects", componentId: "projects" },
-      contact: { id: "contact", title: "Contact", componentId: "contact" },
-    };
-    const app = map[appId];
-    if (app && appComponents?.[app.componentId]) {
-      openWindow(app.id, app.title, appComponents[app.componentId]);
-    }
-  };
+  const openApp = useCallback(
+    (appId) => {
+      const map = {
+        projects: { id: "projects", title: "Projects", componentId: "projects" },
+        contact: { id: "contact", title: "Contact", componentId: "contact" },
+        resume: { id: "resume", title: "Resume.pdf", componentId: "resume" },
+      };
+      const app = map[appId];
+      if (app && appComponents?.[app.componentId]) {
+        openWindow(app.id, app.title, appComponents[app.componentId]);
+      }
+    },
+    [openWindow, appComponents]
+  );
 
   return (
     <div

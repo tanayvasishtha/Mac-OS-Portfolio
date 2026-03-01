@@ -1,5 +1,5 @@
 export const dockItems = [
-  { id: "finder", title: "Finder", iconImage: "/images/finder.png", type: "finder", externalUrl: null },
+  { id: "finder", title: "Finder", iconImage: "/images/finder.png", type: "app", componentId: "finder" },
   { id: "safari", title: "Safari", iconImage: "/images/safari.png", type: "app", componentId: "safari" },
   { id: "projects", title: "Projects", iconImage: "/icons/work.svg", type: "app", componentId: "projects" },
   { id: "gallery", title: "Photos", iconImage: "/images/photos.png", type: "app", componentId: "gallery" },
@@ -8,7 +8,8 @@ export const dockItems = [
   { id: "notepad", title: "Notes", iconImage: "/icons/Notes.webp", type: "app", componentId: "notepad" },
   { id: "calculator", title: "Calculator", iconImage: "/icons/Calculator.png", type: "app", componentId: "calculator" },
   { id: "spotify", title: "Spotify", iconImage: "/icons/Spotify.jpg", type: "app", componentId: "spotify" },
-  { id: "trash", title: "Trash", iconImage: "/images/trash.png", type: "trash", externalUrl: null },
+  { id: "trash", title: "Trash", iconImage: "/icons/trash.svg", type: "app", componentId: "trash" },
+  { id: "minesweeper", title: "Minesweeper", iconImage: "/icons/minesweeper.svg", type: "app", componentId: "minesweeper" },
   { id: "launchpad", title: "Launchpad", iconImage: null, type: "launchpad", externalUrl: null },
   { id: "settings", title: "System Settings", iconImage: "/icons/Settings.svg", type: "app", componentId: "settings" },
   { id: "github", title: "GitHub", iconImage: "/icons/github.svg", type: "external", externalUrl: "https://github.com/tanayvasishtha" },

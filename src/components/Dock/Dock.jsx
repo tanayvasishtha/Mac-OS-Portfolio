@@ -32,7 +32,7 @@ export function Dock({ onOpenLaunchpad }) {
     const container = dockContainerRef.current;
     if (!container) return;
 
-    let cleanup = () => {};
+    let cleanup = () => { };
     const frameId = requestAnimationFrame(() => {
       const icons = container.querySelectorAll(".dock-icon-wrap");
       if (!icons.length) return;
@@ -88,7 +88,6 @@ export function Dock({ onOpenLaunchpad }) {
         onOpenLaunchpad?.();
         return;
       }
-      if (item.type === "trash" || item.type === "finder") return;
       if (item.type === "app" && item.componentId) {
         const component = appComponents?.[item.componentId];
         if (isMinimized(item.id)) restoreWindow(item.id);
@@ -135,12 +134,7 @@ export function Dock({ onOpenLaunchpad }) {
           <button
             key={item.id}
             type="button"
-            onClick={() => {
-              const component = appComponents?.[item.componentId];
-              if (isMinimized(item.id)) restoreWindow(item.id);
-              else if (isOpen(item.id)) restoreWindow(item.id);
-              else if (component) openWindow(item.id, item.title, component);
-            }}
+            onClick={() => handleDockClick(item)}
             className={`flex flex-col items-center justify-center gap-0.5 min-h-[44px] min-w-[44px] p-2 rounded-xl flex-1 max-w-[80px] ${isOpen(item.id) ? "bg-blue-500/20 text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"
               }`}
           >

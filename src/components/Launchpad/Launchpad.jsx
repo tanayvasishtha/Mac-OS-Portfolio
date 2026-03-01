@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { dockItems } from "../../data/dockItems";
 
 const launchpadApps = dockItems.filter(
-  (i) => i.type === "app" || i.type === "finder" || i.type === "launchpad"
+  (i) => i.type === "app" || i.type === "launchpad"
 );
 
 export function Launchpad({ isOpen, onClose, onSelectApp }) {

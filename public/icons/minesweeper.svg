@@ -1,0 +1,29 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" rx="24" fill="url(#minesweep-bg)"/>
+  <rect x="16" y="16" width="96" height="96" rx="8" fill="#c0c0c0" stroke="#808080" stroke-width="2"/>
+  <!-- Grid cells -->
+  <rect x="24" y="24" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="46" y="24" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="68" y="24" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="90" y="24" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="24" y="46" width="20" height="20" fill="#d0d0d0" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="46" y="46" width="20" height="20" fill="#d0d0d0" stroke="#a0a0a0" stroke-width="1"/>
+  <circle cx="56" cy="56" r="10" fill="#404040"/>
+  <circle cx="56" cy="52" r="4" fill="#808080"/>
+  <rect x="68" y="46" width="20" height="20" fill="#d0d0d0" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="90" y="46" width="20" height="20" fill="#d0d0d0" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="24" y="68" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="46" y="68" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="68" y="68" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="90" y="68" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="24" y="90" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="46" y="90" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="68" y="90" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <rect x="90" y="90" width="20" height="20" fill="#e8e8e8" stroke="#a0a0a0" stroke-width="1"/>
+  <defs>
+    <linearGradient id="minesweep-bg" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1e3a5f"/>
+      <stop offset="1" stop-color="#0a2463"/>
+    </linearGradient>
+  </defs>
+</svg>

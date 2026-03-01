@@ -16,13 +16,20 @@ A desktop portfolio that replicates the macOS experience in the browser. It demo
 
 ## What’s included
 
-- **Desktop:** Wallpaper (gradient or image), welcome copy, and desktop shortcuts that open apps.
-- **Dock:** Full set of icons with hover magnification; opens apps, restores minimized windows, and supports external links (e.g. GitHub, LinkedIn).
+- **Desktop:** Wallpaper (image or video), welcome copy, and desktop shortcuts that open apps. Supports both static images and looping video wallpapers.
+- **Dock:** Full set of icons with hover magnification; opens apps, restores minimized windows, and supports external links (GitHub, LinkedIn, X/Twitter). Custom icons for Calculator, Notes, Settings, Spotify, Safari.
 - **Launchpad:** Grid launcher for all apps, consistent with the dock.
-- **Windows:** Draggable, resizable, minimizable, maximizable; traffic-light controls (close, minimize, maximize) and smooth open/transition behavior.
-- **Terminal:** Interactive shell with a fixed banner (Bitcoin + name), full command set (help, whois, projects, open app, social links, easter eggs), command history, and the ability to open other apps from the prompt.
-- **System Settings:** Wallpaper picker; selection is persisted in localStorage and applied across the desktop.
-- **Apps:** About, Projects, Skills, Contact, Gallery, Notes, Calculator, Spotify (link-out), and Terminal—each opened in its own window.
+- **Windows:** Draggable, resizable, minimizable, maximizable; traffic-light controls (close, minimize, maximize) and smooth open/transition behavior. Windows open above the dock with default size 700x520 and minimum 420x320.
+- **Terminal:** Interactive shell with ASCII art banner, full command set (help, whois, projects, open app, social links, easter eggs), command history, and the ability to open other apps from the prompt. Year badge in banner.
+- **System Settings:** Wallpaper picker with image and video options; selection is persisted in localStorage and applied across the desktop.
+- **Apps:**
+  - **About, Skills, Contact, Gallery** – Content sections with your info.
+  - **Projects** – Project cards (WeLoveQR, Dark Mode Bang, Volume Bang, Speed Bang, Portfolio Website) with category filters, featured layout, and links to live demos and repos.
+  - **Notes** – Simple notepad with Save button that opens a mailto link to email the note.
+  - **Calculator** – Basic and advanced modes; scientific functions (sqrt, power, sin, cos, tan, pi, e, ln, log); keyboard support.
+  - **Spotify** – Embedded Build Inc playlist player (in-app playback, Ubuntu portfolio style).
+  - **Safari** – In-app browser with Chrome-like behavior: iframe for Google (homepage and search), custom placeholders for GitHub, Stack Overflow, MDN, Ubuntu, and iframe for other embeddable sites.
+  - **Terminal** – Full command-line experience.
 
 Tech stack: React, Vite, Tailwind CSS, GSAP. No backend; suitable for static or static-export hosting.
 
@@ -52,10 +59,14 @@ Serve the `dist` folder with any static host (Vercel, Netlify, GitHub Pages, etc
 - **Identity and copy:** `src/data/siteConfig.js` (name, nav), and copy in About, Contact, and Terminal (e.g. `TerminalApp.jsx` banner and command output).
 - **Dock and apps:** `src/data/dockItems.js` (order, labels, icons, external URLs). Add or remove entries; ensure each app has a component and is registered in `App.jsx`.
 - **Projects and skills:** `src/data/projects.js`, `src/data/skills.js`. Point images and links to your work.
-- **Wallpapers:** Add images under `public/wallpapers/` and register them in `src/data/wallpapers.js`.
+- **Wallpapers:** Add images or videos under `public/wallpapers/` and register them in `src/data/wallpapers.js`. Use `type: "image"` or `type: "video"` for each entry. Note: Video files over 100MB cannot be committed to GitHub; add them locally or host elsewhere for deployment.
 - **Terminal commands and links:** Edit the command list and handlers in `src/components/apps/TerminalApp.jsx` (e.g. social URLs, project links, `open` app mapping).
 
 For a concise map of where each feature lives, see **FEATURES.md**.
+
+**Assets:**
+- **Icons:** `public/icons/` – Calculator.png, Notes.webp, Settings.svg, Spotify.jpg, and others. Referenced in `dockItems.js`.
+- **Wallpapers:** `public/wallpapers/` – Image formats (png, jpg, webp) and video (mp4, webm). Large videos are in `.gitignore` due to GitHub file size limits.
 
 ---
 

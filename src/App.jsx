@@ -46,6 +46,18 @@ const SettingsApp = lazy(() =>
 const BrowserApp = lazy(() =>
   import("./components/apps/BrowserApp.jsx").then((m) => ({ default: m.BrowserApp }))
 );
+const TrashApp = lazy(() =>
+  import("./components/apps/TrashApp.jsx").then((m) => ({ default: m.TrashApp }))
+);
+const ResumeApp = lazy(() =>
+  import("./components/apps/ResumeApp.jsx").then((m) => ({ default: m.ResumeApp }))
+);
+const FinderApp = lazy(() =>
+  import("./components/apps/FinderApp.jsx").then((m) => ({ default: m.FinderApp }))
+);
+const MinesweeperApp = lazy(() =>
+  import("./components/apps/MinesweeperApp.jsx").then((m) => ({ default: m.MinesweeperApp }))
+);
 
 const Fallback = () => (
   <div className="flex items-center justify-center p-8 text-gray-500">Loading...</div>
@@ -126,6 +138,26 @@ function AppContent() {
           <BrowserApp />
         </Suspense>
       ),
+      trash: (
+        <Suspense fallback={<Fallback />}>
+          <TrashApp />
+        </Suspense>
+      ),
+      resume: (
+        <Suspense fallback={<Fallback />}>
+          <ResumeApp />
+        </Suspense>
+      ),
+      finder: (
+        <Suspense fallback={<Fallback />}>
+          <FinderApp />
+        </Suspense>
+      ),
+      minesweeper: (
+        <Suspense fallback={<Fallback />}>
+          <MinesweeperApp />
+        </Suspense>
+      ),
     }),
     []
   );
@@ -135,22 +167,23 @@ function AppContent() {
     [appComponents, wallpaperId, setWallpaper]
   );
 
-  const handleLaunchpadSelect = (item) => {
-    if (item.type === "app" && item.componentId) {
-      openWindow(item.id, item.title, appComponents[item.componentId]);
-    }
-  };
+  const handleLaunchpadSelect = useCallback(
+    (item) => {
+      if (item.type === "app" && item.componentId) {
+        openWindow(item.id, item.title, appComponents[item.componentId]);
+      }
+    },
+    [openWindow, appComponents]
+  );
 
   return (
     <DesktopContext.Provider value={desktopContextValue}>
       <Menubar />
       <Desktop />
-      <Dock
-        onOpenLaunchpad={() => setLaunchpadOpen(true)}
-      />
+      <Dock onOpenLaunchpad={onOpenLaunchpad} />
       <Launchpad
         isOpen={launchpadOpen}
-        onClose={() => setLaunchpadOpen(false)}
+        onClose={onCloseLaunchpad}
         onSelectApp={handleLaunchpadSelect}
       />
     </DesktopContext.Provider>

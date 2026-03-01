@@ -125,21 +125,24 @@ const AI_RESPONSES = [
   "I'm constantly learning and evolving, just like the code that created me.",
 ];
 
-function addLinesToState(setLines, lines, className = "text-gray-300", delayMs = 60) {
+function addLinesToState(setLines, lines, className = "text-gray-300", delayMs = 60, idRef = null) {
   lines.forEach((line, i) => {
     setTimeout(() => {
-      setLines((prev) => [...prev, { text: line, className }]);
+      const id = idRef ? ++idRef.current : i;
+      setLines((prev) => [...prev, { id, text: line, className }]);
     }, i * delayMs);
   });
 }
 
-function addLine(setLines, text, className = "text-gray-300", delayMs = 0) {
+function addLine(setLines, text, className = "text-gray-300", delayMs = 0, idRef = null) {
+  const push = () => {
+    const id = idRef ? ++idRef.current : Math.random();
+    setLines((prev) => [...prev, { id, text, className }]);
+  };
   if (delayMs > 0) {
-    setTimeout(() => {
-      setLines((prev) => [...prev, { text, className }]);
-    }, delayMs);
+    setTimeout(push, delayMs);
   } else {
-    setLines((prev) => [...prev, { text, className }]);
+    push();
   }
 }
 
@@ -155,12 +158,17 @@ export function TerminalApp() {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const didInit = useRef(false);
+  const lineIdRef = useRef(0);
 
   useEffect(() => {
     if (didInit.current) return;
     didInit.current = true;
     setLines(
-      BANNER.map((line) => ({ text: line, className: "text-emerald-400" }))
+      BANNER.map((line) => ({
+        id: lineIdRef.current++,
+        text: line,
+        className: "text-emerald-400",
+      }))
     );
     setTimeout(() => inputRef.current?.focus(), 80);
   }, []);
@@ -178,141 +186,147 @@ export function TerminalApp() {
       const rawCmd = cmd.trim();
       const c = rawCmd.toLowerCase();
       if (!c) {
-        setLines((prev) => [...prev, { text: PROMPT, className: "text-amber-200/90" }]);
+        setLines((prev) => [
+          ...prev,
+          { id: lineIdRef.current++, text: PROMPT, className: "text-amber-200/90" },
+        ]);
         return;
       }
 
       if (!passwordMode) {
         setCommandHistory((prev) => [...prev, rawCmd]);
         setHistoryIndex(-1);
-        setLines((prev) => [...prev, { text: PROMPT + rawCmd, className: "text-gray-400" }]);
+        setLines((prev) => [
+          ...prev,
+          { id: lineIdRef.current++, text: PROMPT + rawCmd, className: "text-gray-400" },
+        ]);
       }
 
       switch (c) {
         case "help":
-          addLinesToState(setLines, HELP, "text-gray-300", 40);
+          addLinesToState(setLines, HELP, "text-gray-300", 40, lineIdRef);
           break;
         case "whois":
-          addLinesToState(setLines, WHOIS, "text-gray-300", 50);
+          addLinesToState(setLines, WHOIS, "text-gray-300", 50, lineIdRef);
           break;
         case "whoami":
-          addLinesToState(setLines, WHOAMI, "text-gray-300", 50);
+          addLinesToState(setLines, WHOAMI, "text-gray-300", 50, lineIdRef);
           break;
         case "ai": {
           const msg = AI_RESPONSES[Math.floor(Math.random() * AI_RESPONSES.length)];
-          addLine(setLines, "  🤖 AI: " + msg, "text-emerald-400", 80);
-          addLine(setLines, "", "", 200);
+          addLine(setLines, "  🤖 AI: " + msg, "text-emerald-400", 80, lineIdRef);
+          addLine(setLines, "", "", 200, lineIdRef);
           break;
         }
         case "sudo":
-          addLine(setLines, "  Oh no, you're not admin...", "text-amber-400", 80);
+          addLine(setLines, "  Oh no, you're not admin...", "text-amber-400", 80, lineIdRef);
           setTimeout(() => window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank"), 1000);
-          addLine(setLines, "", "", 400);
+          addLine(setLines, "", "", 400, lineIdRef);
           break;
         case "social":
-          addLinesToState(setLines, SOCIAL, "text-gray-300", 40);
+          addLinesToState(setLines, SOCIAL, "text-gray-300", 40, lineIdRef);
           break;
         case "secret":
           setPasswordMode(true);
-          addLine(setLines, "  Enter password:", "text-amber-200/90", 80);
-          addLine(setLines, "", "", 120);
+          addLine(setLines, "  Enter password:", "text-amber-200/90", 80, lineIdRef);
+          addLine(setLines, "", "", 120, lineIdRef);
           break;
         case "projects":
-          addLinesToState(setLines, PROJECTS_LIST, "text-gray-300", 45);
+          addLinesToState(setLines, PROJECTS_LIST, "text-gray-300", 45, lineIdRef);
           break;
         case "password":
-          addLine(setLines, "  Lol! You're joking, right? You're gonna have to try harder than that! 😂", "text-red-400", 100);
-          addLine(setLines, "", "", 200);
+          addLine(setLines, "  Lol! You're joking, right? You're gonna have to try harder than that! 😂", "text-red-400", 100, lineIdRef);
+          addLine(setLines, "", "", 200, lineIdRef);
           break;
         case "history":
-          addLine(setLines, " ", "", 0);
+          addLine(setLines, " ", "", 0, lineIdRef);
           commandHistory.forEach((h, i) => {
-            addLine(setLines, "  " + h, "text-gray-400", 60 * (i + 1));
+            addLine(setLines, "  " + h, "text-gray-400", 60 * (i + 1), lineIdRef);
           });
-          addLine(setLines, " ", "text-gray-300", 60 * commandHistory.length + 80);
+          addLine(setLines, " ", "text-gray-300", 60 * commandHistory.length + 80, lineIdRef);
           break;
         case "email":
-          addLine(setLines, "  Opening mailto...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening mailto...", "text-emerald-400", 0, lineIdRef);
           window.open("mailto:edgepersonal2004@gmail.com", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         case "sponsor me":
         case "sponsor":
-          addLine(setLines, "  Opening Buy Me a Coffee...", "text-emerald-400", 0);
-          addLine(setLines, "  Thank you for supporting my work! ☕", "text-gray-400", 200);
+          addLine(setLines, "  Opening Buy Me a Coffee...", "text-emerald-400", 0, lineIdRef);
+          addLine(setLines, "  Thank you for supporting my work! ☕", "text-gray-400", 200, lineIdRef);
           window.open("https://buymeacoffee.com/tanayvasishtha", "_blank");
-          addLine(setLines, "", "", 400);
+          addLine(setLines, "", "", 400, lineIdRef);
           break;
         case "clear":
           setLines([]);
           return;
         case "banner":
-          addLinesToState(setLines, BANNER, "text-emerald-400", 60);
+          addLinesToState(setLines, BANNER, "text-emerald-400", 60, lineIdRef);
           break;
         case "matrix":
-          addLine(setLines, "  🔴 ENTERING MATRIX MODE... 🔴", "text-emerald-400", 80);
-          addLine(setLines, "  Wake up, Neo...", "text-gray-400", 280);
-          addLine(setLines, "  The Matrix has you...", "text-gray-400", 480);
-          addLine(setLines, "  Follow the white rabbit.", "text-gray-400", 680);
-          addLine(setLines, "", "", 900);
+          addLine(setLines, "  🔴 ENTERING MATRIX MODE... 🔴", "text-emerald-400", 80, lineIdRef);
+          addLine(setLines, "  Wake up, Neo...", "text-gray-400", 280, lineIdRef);
+          addLine(setLines, "  The Matrix has you...", "text-gray-400", 480, lineIdRef);
+          addLine(setLines, "  Follow the white rabbit.", "text-gray-400", 680, lineIdRef);
+          addLine(setLines, "", "", 900, lineIdRef);
           break;
         case "hack":
-          addLine(setLines, "  🚨 INITIATING HACKER MODE... 🚨", "text-red-400", 80);
-          addLine(setLines, "  Accessing mainframe...", "text-gray-400", 280);
-          addLine(setLines, "  Bypassing security protocols...", "text-gray-400", 480);
-          addLine(setLines, "  System compromised! 💀", "text-red-400", 680);
-          addLine(setLines, "", "", 900);
+          addLine(setLines, "  🚨 INITIATING HACKER MODE... 🚨", "text-red-400", 80, lineIdRef);
+          addLine(setLines, "  Accessing mainframe...", "text-gray-400", 280, lineIdRef);
+          addLine(setLines, "  Bypassing security protocols...", "text-gray-400", 480, lineIdRef);
+          addLine(setLines, "  System compromised! 💀", "text-red-400", 680, lineIdRef);
+          addLine(setLines, "", "", 900, lineIdRef);
           break;
         case "love":
-          addLine(setLines, "  💕 LOVE DETECTED! 💕", "text-pink-400", 80);
-          addLine(setLines, "   ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥", "text-pink-400", 200);
-          addLine(setLines, "   ♥ ♥", "text-pink-400", 300);
-          addLine(setLines, "   ♥ ♥", "text-pink-400", 400);
-          addLine(setLines, "  ♥ I LOVE CODING! 💻 ♥", "text-pink-400", 500);
-          addLine(setLines, "   ♥ ♥", "text-pink-400", 600);
-          addLine(setLines, "   ♥ ♥", "text-pink-400", 700);
-          addLine(setLines, "   ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥", "text-pink-400", 800);
-          addLine(setLines, "", "", 1000);
+          addLine(setLines, "  💕 LOVE DETECTED! 💕", "text-pink-400", 80, lineIdRef);
+          addLine(setLines, "   ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥", "text-pink-400", 200, lineIdRef);
+          addLine(setLines, "   ♥ ♥", "text-pink-400", 300, lineIdRef);
+          addLine(setLines, "   ♥ ♥", "text-pink-400", 400, lineIdRef);
+          addLine(setLines, "  ♥ I LOVE CODING! 💻 ♥", "text-pink-400", 500, lineIdRef);
+          addLine(setLines, "   ♥ ♥", "text-pink-400", 600, lineIdRef);
+          addLine(setLines, "   ♥ ♥", "text-pink-400", 700, lineIdRef);
+          addLine(setLines, "   ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥", "text-pink-400", 800, lineIdRef);
+          addLine(setLines, "", "", 1000, lineIdRef);
           break;
         case "github":
-          addLine(setLines, "  Opening GitHub...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening GitHub...", "text-emerald-400", 0, lineIdRef);
           window.open("https://github.com/tanayvasishtha", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         case "linkedin":
-          addLine(setLines, "  Opening LinkedIn...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening LinkedIn...", "text-emerald-400", 0, lineIdRef);
           window.open("https://linkedin.com/in/tanayvasishtha", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         case "twitter":
         case "x":
-          addLine(setLines, "  Opening X (Twitter)...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening X (Twitter)...", "text-emerald-400", 0, lineIdRef);
           window.open("https://x.com/TanayVasishtha", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         case "darkmodebang":
         case "darkmode":
-          addLine(setLines, "  Opening Dark Mode Bang...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening Dark Mode Bang...", "text-emerald-400", 0, lineIdRef);
           window.open("https://chromewebstore.google.com/detail/dark-mode-bang-universal/hnnplkbhhlfopkkhfepdiljdbclfbpjh", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         case "volumebang":
         case "volume":
-          addLine(setLines, "  Opening Volume Bang...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening Volume Bang...", "text-emerald-400", 0, lineIdRef);
           window.open("https://chromewebstore.google.com/detail/volume-bang-premium-audio/ancjplaiedoominjbebhdgjipcgfbopl", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         case "speedbang":
         case "speed":
-          addLine(setLines, "  Opening Speed Bang...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening Speed Bang...", "text-emerald-400", 0, lineIdRef);
           window.open("https://chromewebstore.google.com/detail/speedbang-multiplatform-v/kaacodjcoaepldmhnpgodhafbcmlkfgo", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         case "weloveqr":
         case "qr":
-          addLine(setLines, "  Opening WeLoveQR...", "text-emerald-400", 0);
+          addLine(setLines, "  Opening WeLoveQR...", "text-emerald-400", 0, lineIdRef);
           window.open("https://weloveqr.netlify.app", "_blank");
-          addLine(setLines, "", "", 100);
+          addLine(setLines, "", "", 100, lineIdRef);
           break;
         default:
           if (c.startsWith("open ")) {
@@ -327,21 +341,21 @@ export function TerminalApp() {
             const [id, title] = map[app] || [];
             if (id && appComponents?.[id]) {
               openWindow(id, title, appComponents[id]);
-              addLine(setLines, `  Opening ${title}...`, "text-emerald-400", 0);
-              addLine(setLines, "", "", 100);
+              addLine(setLines, `  Opening ${title}...`, "text-emerald-400", 0, lineIdRef);
+              addLine(setLines, "", "", 100, lineIdRef);
             } else {
               setLines((prev) => [
                 ...prev,
-                { text: `  Unknown app: ${app}. Try: about, projects, contact, gallery, skills`, className: "text-amber-400" },
-                { text: "", className: "" },
+                { id: lineIdRef.current++, text: `  Unknown app: ${app}. Try: about, projects, contact, gallery, skills`, className: "text-amber-400" },
+                { id: lineIdRef.current++, text: "", className: "" },
               ]);
             }
           } else {
             setLines((prev) => [
               ...prev,
-              { text: `  zsh: command not found: ${rawCmd}`, className: "text-red-400" },
-              { text: "  Type 'help' for available commands.", className: "text-gray-500" },
-              { text: "", className: "" },
+              { id: lineIdRef.current++, text: `  zsh: command not found: ${rawCmd}`, className: "text-red-400" },
+              { id: lineIdRef.current++, text: "  Type 'help' for available commands.", className: "text-gray-500" },
+              { id: lineIdRef.current++, text: "", className: "" },
             ]);
           }
       }
@@ -354,12 +368,12 @@ export function TerminalApp() {
       if (e.key === "Enter") {
         e.preventDefault();
         if (password === "Banger") {
-          addLinesToState(setLines, SECRET, "text-emerald-400", 80);
+          addLinesToState(setLines, SECRET, "text-emerald-400", 80, lineIdRef);
           setPasswordMode(false);
           setPassword("");
         } else {
-          addLine(setLines, "  Wrong password.", "text-red-400", 0);
-          addLine(setLines, "", "", 80);
+          addLine(setLines, "  Wrong password.", "text-red-400", 0, lineIdRef);
+          addLine(setLines, "", "", 80, lineIdRef);
           setPasswordMode(false);
           setPassword("");
         }
@@ -428,8 +442,8 @@ export function TerminalApp() {
         className="flex-1 overflow-y-auto overflow-x-auto p-4 min-h-0"
         style={{ scrollBehavior: "smooth" }}
       >
-        {lines.map((line, i) => (
-          <div key={i} className={`terminal-line ${line.className || "text-gray-300"}`} style={{ whiteSpace: "pre", fontFamily: "inherit" }}>
+        {lines.map((line) => (
+          <div key={line.id ?? line.text} className={`terminal-line ${line.className || "text-gray-300"}`} style={{ whiteSpace: "pre", fontFamily: "inherit" }}>
             {typeof line.text === "string" && line.text.includes("<span") ? (
               <span dangerouslySetInnerHTML={{ __html: line.text }} className="terminal-banner-html" />
             ) : (

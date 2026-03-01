@@ -52,13 +52,16 @@ export function Window({
   }, [id]);
 
   useGSAP(() => {
-    if (isMobile || isMaximized || !windowRef.current) return;
+    if (isMobile || isMaximized || !windowRef.current || !dragTriggerRef.current) return;
     const bounds = document.querySelector(".desktop");
     if (!bounds) return;
     const el = windowRef.current;
+    const trigger = dragTriggerRef.current;
     const pos = position || { top: 80, left: 100 };
+    gsap.set(el, { left: pos.left, top: pos.top, x: 0, y: 0 });
     Draggable.create(el, {
       type: "x,y",
+      trigger,
       x: pos.left,
       y: pos.top,
       bounds: bounds,
@@ -74,7 +77,7 @@ export function Window({
       },
     });
     return () => Draggable.get(el)?.kill();
-  }, [id, isMaximized, isMobile]);
+  }, [id, isMaximized, isMobile, position?.top, position?.left, onPositionChange]);
 
   useEffect(() => {
     const resizeEl = resizeRef.current;
@@ -141,6 +144,8 @@ export function Window({
 
   const handleMaximize = useCallback(() => onMaximize(id), [id, onMaximize]);
 
+  const handleFocus = useCallback(() => onFocus(id), [id, onFocus]);
+
   if (isMinimized) return null;
 
   const pos = position || { top: 80, left: 100 };
@@ -176,7 +181,7 @@ export function Window({
       ref={windowRef}
       style={style}
       className="rounded-xl shadow-2xl shadow-black/30 overflow-hidden border border-white/20 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl min-w-[300px] sm:min-w-[420px] min-h-[320px] flex flex-col transition-[top,left,width,height] duration-300 ease-[cubic-bezier(0.33,1,0.68,1)]"
-      onClick={() => onFocus(id)}
+      onClick={handleFocus}
       role="dialog"
       aria-label={title}
     >
