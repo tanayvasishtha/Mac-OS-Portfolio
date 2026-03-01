@@ -20,7 +20,7 @@ A desktop portfolio that replicates the macOS experience in the browser. It demo
 - **Dock:** Full set of icons with hover magnification; opens apps, restores minimized windows, and supports external links (GitHub, LinkedIn, X/Twitter). Custom icons for Calculator, Notes, Settings, Spotify, Safari.
 - **Launchpad:** Grid launcher for all apps, consistent with the dock.
 - **Windows:** Draggable, resizable, minimizable, maximizable; traffic-light controls (close, minimize, maximize) and smooth open/transition behavior. Windows open above the dock with default size 700x520 and minimum 420x320.
-- **Terminal:** Interactive shell with ASCII art banner, full command set (help, whois, projects, open app, social links, easter eggs), command history, and the ability to open other apps from the prompt. Year badge in banner.
+- **Terminal:** Interactive shell with ASCII art banner, full command set (help, whois, projects, open app, social links, easter eggs), command history, and the ability to open other apps from the prompt. Year badge in banner and stable rendering even under heavy output.
 - **System Settings:** Wallpaper picker with image and video options; selection is persisted in localStorage and applied across the desktop.
 - **Apps:**
   - **About, Skills, Contact, Gallery** – Content sections with your info.
@@ -30,6 +30,10 @@ A desktop portfolio that replicates the macOS experience in the browser. It demo
   - **Spotify** – Embedded Build Inc playlist player (in-app playback, Ubuntu portfolio style).
   - **Safari** – In-app browser with Chrome-like behavior: iframe for Google (homepage and search), custom placeholders for GitHub, Stack Overflow, MDN, Ubuntu, and iframe for other embeddable sites.
   - **Terminal** – Full command-line experience.
+  - **Finder** – Minimal file-browser–style app entry point.
+  - **Resume** – In-window PDF viewer for your CV (no download required).
+  - **Trash** – Fun, non-destructive “trash” app with playful fake items.
+  - **Minesweeper** – Classic Minesweeper mini-game with first-click-safe boards, coin rewards, difficulty levels, persistent best times, and win-rate stats.
 
 Tech stack: React, Vite, Tailwind CSS, GSAP. No backend; suitable for static or static-export hosting.
 
