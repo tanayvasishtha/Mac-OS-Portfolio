@@ -508,11 +508,10 @@ export function TerminalApp() {
         .terminal-app .terminal-banner-html .index { color: #9ca3af; }
         .terminal-app .terminal-banner-html .color2 { color: #34d399; }
         .terminal-app .terminal-banner-html .command { color: #fbbf24; }
-        .terminal-app .terminal-output::-webkit-scrollbar:horizontal { height: 0; display: none; }
       `}</style>
       <div
         ref={scrollRef}
-        className="terminal-output flex-1 min-w-0 overflow-y-auto overflow-x-auto p-4 min-h-0"
+        className="terminal-output flex-1 min-w-0 overflow-y-auto overflow-x-hidden p-4 min-h-0"
         style={{ scrollBehavior: "smooth" }}
       >
         {lines.map((line) => (
