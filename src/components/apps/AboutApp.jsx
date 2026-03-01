@@ -74,11 +74,11 @@ export function AboutApp() {
           <Linkedin className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </a>
         <a
-          href="https://twitter.com"
+          href="https://x.com/TanayVasishtha"
           target="_blank"
           rel="noopener noreferrer"
           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          aria-label="Twitter"
+          aria-label="X (Twitter)"
         >
           <Twitter className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </a>

@@ -1,5 +1,7 @@
 # Wallpapers
 
-Add wallpaper images here (e.g. `ventura.jpg`, `sonoma.jpg`) and register them in `src/data/wallpapers.js`.
+Place wallpaper assets here and register them in `src/data/wallpapers.js`.
 
-Supported formats: JPG, PNG, WebP. Use descriptive filenames and keep file sizes reasonable for fast loading.
+- **Default** – Built-in gradient (no file).
+- **Images** – JPG, PNG, or WebP. Add the file here and add an entry with `type: "image"` and `src: "/wallpapers/yourfile.jpg"`.
+- **Videos** – MP4 or WebM. Add the file here and add an entry with `type: "video"` and `src: "/wallpapers/yourfile.mp4"`. Video wallpapers play looped and muted on the desktop. Keep file size reasonable for fast loading.

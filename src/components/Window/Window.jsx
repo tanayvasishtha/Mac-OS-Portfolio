@@ -85,8 +85,8 @@ export function Window({
       e.preventDefault();
       startX = e.clientX;
       startY = e.clientY;
-      startW = windowRef.current?.offsetWidth ?? size?.width ?? 500;
-      startH = windowRef.current?.offsetHeight ?? size?.height ?? 400;
+      startW = windowRef.current?.offsetWidth ?? size?.width ?? 700;
+      startH = windowRef.current?.offsetHeight ?? size?.height ?? 520;
       document.addEventListener("pointermove", onPointerMove);
       document.addEventListener("pointerup", onPointerUp);
     };
@@ -94,8 +94,8 @@ export function Window({
     const onPointerMove = (e) => {
       const dw = e.clientX - startX;
       const dh = e.clientY - startY;
-      const newW = Math.max(400, startW + dw);
-      const newH = Math.max(300, startH + dh);
+      const newW = Math.max(360, startW + dw);
+      const newH = Math.max(320, startH + dh);
       onSizeChange(id, { width: newW, height: newH });
     };
 
@@ -166,8 +166,8 @@ export function Window({
         position: "absolute",
         top: pos.top,
         left: pos.left,
-        width: size?.width ?? 500,
-        height: size?.height ?? 400,
+        width: size?.width ?? 700,
+        height: size?.height ?? 520,
       }),
   };
 
@@ -175,7 +175,7 @@ export function Window({
     <div
       ref={windowRef}
       style={style}
-      className="rounded-xl shadow-2xl shadow-black/30 overflow-hidden border border-white/20 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl min-w-[280px] sm:min-w-[400px] min-h-[300px] flex flex-col transition-[top,left,width,height] duration-300 ease-[cubic-bezier(0.33,1,0.68,1)]"
+      className="rounded-xl shadow-2xl shadow-black/30 overflow-hidden border border-white/20 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl min-w-[300px] sm:min-w-[420px] min-h-[320px] flex flex-col transition-[top,left,width,height] duration-300 ease-[cubic-bezier(0.33,1,0.68,1)]"
       onClick={() => onFocus(id)}
       role="dialog"
       aria-label={title}

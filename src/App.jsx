@@ -43,6 +43,9 @@ const SpotifyApp = lazy(() =>
 const SettingsApp = lazy(() =>
   import("./components/apps/SettingsApp.jsx").then((m) => ({ default: m.SettingsApp }))
 );
+const BrowserApp = lazy(() =>
+  import("./components/apps/BrowserApp.jsx").then((m) => ({ default: m.BrowserApp }))
+);
 
 const Fallback = () => (
   <div className="flex items-center justify-center p-8 text-gray-500">Loading...</div>
@@ -51,8 +54,8 @@ const Fallback = () => (
 function AppContent() {
   const [launchpadOpen, setLaunchpadOpen] = useState(false);
   const [wallpaperId, setWallpaperState] = useState(() => {
-    if (typeof window === "undefined") return "gradient";
-    return window.localStorage?.getItem(WALLPAPER_STORAGE_KEY) || "gradient";
+    if (typeof window === "undefined") return "wallpaper-1";
+    return window.localStorage?.getItem(WALLPAPER_STORAGE_KEY) || "wallpaper-1";
   });
   const { openWindow } = useWindowManagerContext();
 
@@ -116,6 +119,11 @@ function AppContent() {
       settings: (
         <Suspense fallback={<Fallback />}>
           <SettingsApp />
+        </Suspense>
+      ),
+      safari: (
+        <Suspense fallback={<Fallback />}>
+          <BrowserApp />
         </Suspense>
       ),
     }),

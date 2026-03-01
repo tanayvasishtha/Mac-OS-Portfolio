@@ -1,6 +1,8 @@
 import { memo, useCallback, useState } from "react";
 
 const FALLBACK_ICONS = { finder: "/images/folder.png" };
+// Icons that use JPG (no transparency) – clip to rounded rect so opaque edges aren’t visible
+const OPAQUE_ICON_IDS = ["spotify"];
 
 export const DockIcon = memo(function DockIcon({ item, isActive, onClick }) {
   const [imgError, setImgError] = useState(false);
@@ -9,6 +11,7 @@ export const DockIcon = memo(function DockIcon({ item, isActive, onClick }) {
   const usePrimary = item.iconImage && !imgError;
   const useFallback = item.iconImage && imgError && fallbackSrc && !fallbackError;
   const displaySrc = useFallback ? fallbackSrc : usePrimary ? item.iconImage : null;
+  const useRoundedClip = OPAQUE_ICON_IDS.includes(item.id);
 
   const handleClick = useCallback(() => {
     if (item.type === "external" && item.externalUrl) {
@@ -25,17 +28,19 @@ export const DockIcon = memo(function DockIcon({ item, isActive, onClick }) {
 
   return (
     <div
-      className="dock-icon-wrap flex flex-col items-center justify-end cursor-pointer origin-bottom scale-100"
+      className="dock-icon-wrap flex flex-col items-center justify-end cursor-pointer origin-bottom scale-100 will-change-transform"
       onClick={handleClick}
     >
       <div className="relative group flex flex-col items-center">
         {displaySrc ? (
-          <img
-            src={displaySrc}
-            alt=""
-            className="w-10 h-10 object-contain flex-shrink-0"
-            onError={handleImgError}
-          />
+          <div className={`w-10 h-10 flex-shrink-0 overflow-hidden ${useRoundedClip ? "rounded-xl" : ""}`}>
+            <img
+              src={displaySrc}
+              alt=""
+              className="w-full h-full object-contain"
+              onError={handleImgError}
+            />
+          </div>
         ) : !item.iconImage ? (
           <span className="w-10 h-10 flex items-center justify-center text-2xl">⊞</span>
         ) : (

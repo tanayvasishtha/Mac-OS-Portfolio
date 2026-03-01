@@ -31,45 +31,54 @@ export function Dock({ onOpenLaunchpad }) {
   useEffect(() => {
     const container = dockContainerRef.current;
     if (!container) return;
-    const icons = container.querySelectorAll(".dock-icon-wrap");
-    if (!icons.length) return;
 
-    const getScale = (distance) => {
-      if (distance <= 0) return MAGNIFY;
-      const falloff = Math.max(0, 1 - distance / MAGNIFY_RADIUS);
-      return 1 + (MAGNIFY - 1) * falloff;
-    };
+    let cleanup = () => {};
+    const frameId = requestAnimationFrame(() => {
+      const icons = container.querySelectorAll(".dock-icon-wrap");
+      if (!icons.length) return;
 
-    const onMouseMove = (e) => {
-      const mouseX = e.clientX;
-      let nearest = 0;
-      let nearestDist = Infinity;
-      icons.forEach((icon, j) => {
-        const r = icon.getBoundingClientRect();
-        const centerX = r.left + r.width / 2;
-        const d = Math.abs(mouseX - centerX);
-        if (d < nearestDist) {
-          nearestDist = d;
-          nearest = j;
-        }
-      });
-      const centerIndex = nearest;
-      icons.forEach((icon, j) => {
-        const distance = Math.abs(j - centerIndex);
-        const scale = getScale(distance);
-        gsap.to(icon, { scale, duration: 0.18, ease: "power2.out", overwrite: "auto" });
-      });
-    };
+      const getScale = (distance) => {
+        if (distance <= 0) return MAGNIFY;
+        const falloff = Math.max(0, 1 - distance / MAGNIFY_RADIUS);
+        return 1 + (MAGNIFY - 1) * falloff;
+      };
 
-    const onMouseLeave = () => {
-      gsap.to(icons, { scale: 1, duration: 0.25, ease: "power2.out", overwrite: "auto" });
-    };
+      const onMouseMove = (e) => {
+        const mouseX = e.clientX;
+        let nearest = 0;
+        let nearestDist = Infinity;
+        icons.forEach((icon, j) => {
+          const r = icon.getBoundingClientRect();
+          const centerX = r.left + r.width / 2;
+          const d = Math.abs(mouseX - centerX);
+          if (d < nearestDist) {
+            nearestDist = d;
+            nearest = j;
+          }
+        });
+        const centerIndex = nearest;
+        icons.forEach((icon, j) => {
+          const distance = Math.abs(j - centerIndex);
+          const scale = getScale(distance);
+          gsap.to(icon, { scale, duration: 0.18, ease: "power2.out", overwrite: "auto" });
+        });
+      };
 
-    container.addEventListener("mousemove", onMouseMove);
-    container.addEventListener("mouseleave", onMouseLeave);
+      const onMouseLeave = () => {
+        gsap.to(icons, { scale: 1, duration: 0.25, ease: "power2.out", overwrite: "auto" });
+      };
+
+      container.addEventListener("mousemove", onMouseMove);
+      container.addEventListener("mouseleave", onMouseLeave);
+      cleanup = () => {
+        container.removeEventListener("mousemove", onMouseMove);
+        container.removeEventListener("mouseleave", onMouseLeave);
+      };
+    });
+
     return () => {
-      container.removeEventListener("mousemove", onMouseMove);
-      container.removeEventListener("mouseleave", onMouseLeave);
+      cancelAnimationFrame(frameId);
+      cleanup();
     };
   }, []);
 

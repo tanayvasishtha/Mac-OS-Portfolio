@@ -5,24 +5,25 @@ import { siteConfig } from "../../data/siteConfig";
 
 const PROMPT = `${siteConfig.ownerName.toLowerCase()}@Tanays-MacBook-Pro ~ % `;
 
+// ASCII Art Banner
 const BANNER = [
+  '<span class="index">Tanay Vasishtha (TV) Not A Corporation. All rights reserved.</span>',
   "",
-  "  Tanay Vasishtha (TV) Not A Corporation. All rights reserved.",
+  " /*",
+  "  *    ⣿⣿⣿⣿⠀⢸⣿⡇⠀⢸⣿⣿⣿⣿     _________  ________  ________   ________      ___    ___      ___      ___ ________  ________  ___  ________  ___  ___  _________  ___  ___  ________         ",
+  "  *    ⣇⣀⠀⠀⠀⢀⣀⣀⠀⠀⠀⠉⠻⣿    |\\___   ___\\\\   __  \\|\\   ___  \\|\\   __  \\    |\\  \\  /  /|    |\\  \\    /  /|\\   __  \\|\\   ____\\|\\  \\|\\   ____\\|\\  \\|\\  \\|\\___   ___\\\\  \\|\\  \\|\\   __  \\        ",
+  "  *    ⣿⣿⡇⠀⠀⢸⣿⣿⣿⣷⠀⠀⠀⣿    \\|___ \\  \\_\\ \\  \\|\\  \\ \\  \\\\ \\  \\ \\  \\|\\  \\   \\ \\  \\/  / /    \\ \\  \\  /  / | \\  \\|\\  \\ \\  \\___|\\ \\  \\ \\  \\___|\\ \\  \\\\\\  \\|___ \\  \\_\\ \\  \\\\\\  \\ \\  \\|\\  \\       ",
+  "  *    ⣿⣿⡇⠀⠀⢸⣿⣿⡿⠟⠀⠀⣠⣿         \\ \\  \\ \\ \\   __  \\ \\  \\\\ \\  \\ \\   __  \\   \\ \\    / /      \\ \\  \\/  / / \\ \\   __  \\ \\_____  \\ \\  \\ \\_____  \\ \\   __  \\   \\ \\  \\ \\ \\   __  \\ \\   __  \\      ",
+  "  *    ⣿⣿⡇⠀⠀⢀⣀⣀⣀⠀⠀⠚⠻⣿          \\ \\  \\ \\ \\  \\ \\  \\ \\  \\\\ \\  \\ \\  \\ \\  \\   \\/  /  /        \\ \\    / /   \\ \\  \\ \\  \\|____|\\  \\ \\  \\|____|\\  \\ \\  \\ \\  \\   \\ \\  \\ \\ \\  \\ \\  \\ \\  \\ \\  \\     ",
+  "  *    ⣿⣿⡇⠀⠀⢸⣿⣿⣿⣿⡄⠀⠀⠘           \\ \\__\\ \\ \\__\\ \\__\\ \\__\\\\ \\__\\ \\__\\ \\__\\__/  / /           \\ \\__/ /     \\ \\__\\ \\__\\____\\_\\  \\ \\__\\____\\_\\  \\ \\__\\ \\__\\   \\ \\__\\ \\ \\__\\ \\__\\ \\__\\ \\__\\    ",
+  "  *    ⣿⣿⡇⠀⠀⢸⣿⣿⣿⣿⠃⠀⠀⠀            \\|__|  \\|__|\\|__|\\|__| \\|__|\\|__|\\|__|\\___/ /             \\|__|/       \\|__|\\|__|\\_________\\|__|\\_________\\|__|\\|__|    \\|__|  \\|__|\\|__|\\|__|\\|__|    ",
+  "  *    ⡏⠉⠀⠀⠀⠈⠉⠉⠁⠀⠀⣀⣤⣾                                                 \\|___|/                                    \\|_________|   \\|_________|                                            ",
+  "  *    ⣿⣿⣿⣿⠀⢸⣿⡇⠀⢸⣿⣿⣿⣿                                                                                                                                                                   ",
+  "  *                                                                                                                                                             @2026      ",
+  "  */",
   "",
-  "  /*",
-  "   *   ___      ###   #   #   #   #   ### ",
-  "   *  |   |      #    #   #   #   #  #   #",
-  "   *  | | |      #    #   #   ##  #  #   #",
-  "   *  | | |      #    #####  # # #  ##### ",
-  "   *  |___|      #    #   #  #  ##  #   #",
-  "   *             #    #   #  #   #  #   #",
-  "   *",
-  "   *   (₿)  T A N A Y   V A S I S H T H A   @2025",
-  "   */",
-  "",
-  "  Welcome to my interactive web terminal.",
-  "  For a list of available commands, type 'help'.",
-  "",
+  '<span class="color2">Welcome to my interactive web terminal.</span>',
+  '<span class="color2">For a list of available commands, type</span> <span class="command">\'help\'</span><span class="color2">.</span>',
 ];
 
 const HELP = [
@@ -417,14 +418,23 @@ export function TerminalApp() {
       role="application"
       aria-label="Terminal"
     >
+      <style>{`
+        .terminal-app .terminal-banner-html .index { color: #9ca3af; }
+        .terminal-app .terminal-banner-html .color2 { color: #34d399; }
+        .terminal-app .terminal-banner-html .command { color: #fbbf24; }
+      `}</style>
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden p-4 min-h-0"
+        className="flex-1 overflow-y-auto overflow-x-auto p-4 min-h-0"
         style={{ scrollBehavior: "smooth" }}
       >
         {lines.map((line, i) => (
-          <div key={i} className={line.className || "text-gray-300"} style={{ whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
-            {line.text}
+          <div key={i} className={`terminal-line ${line.className || "text-gray-300"}`} style={{ whiteSpace: "pre", fontFamily: "inherit" }}>
+            {typeof line.text === "string" && line.text.includes("<span") ? (
+              <span dangerouslySetInnerHTML={{ __html: line.text }} className="terminal-banner-html" />
+            ) : (
+              line.text
+            )}
           </div>
         ))}
       </div>

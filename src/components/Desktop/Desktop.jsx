@@ -15,45 +15,19 @@ const desktopItems = [
     iconImage: "/icons/file.svg",
     appId: "contact",
   },
-  {
-    id: "project-1",
-    title: "Project 1 (SnapCast)",
-    icon: null,
-    iconImage: "/images/project-1.png",
-    appId: "projects",
-  },
-  {
-    id: "project-2",
-    title: "Project 2 (Converso)",
-    icon: null,
-    iconImage: "/images/project-1.png",
-    appId: "projects",
-  },
-  {
-    id: "project-3",
-    title: "Project 3 (PrepWise)",
-    icon: null,
-    iconImage: "/images/project-1.png",
-    appId: "projects",
-  },
 ];
-
-const DEFAULT_GRADIENT = `
-  radial-gradient(ellipse 120% 80% at 20% 20%, rgba(120, 140, 200, 0.5) 0%, transparent 50%),
-  radial-gradient(ellipse 100% 100% at 80% 80%, rgba(40, 60, 120, 0.6) 0%, transparent 50%),
-  radial-gradient(ellipse 80% 60% at 50% 90%, rgba(30, 50, 100, 0.7) 0%, transparent 45%),
-  linear-gradient(160deg, #3d4d7a 0%, #2a3560 40%, #1e2847 100%)
-`;
 
 export function Desktop() {
   const welcomeRef = useRef(null);
+  const videoRef = useRef(null);
   const { openWindow } = useWindowManagerContext();
   const { appComponents, wallpaperId } = useDesktop();
   const wallpaperConfig = useMemo(
-    () => wallpapers.find((w) => w.id === wallpaperId) || wallpapers[0] || { type: "gradient" },
+    () => wallpapers.find((w) => w.id === wallpaperId) || wallpapers[0],
     [wallpaperId]
   );
-  const isGradient = wallpaperConfig?.type === "gradient";
+  const isVideo = wallpaperConfig?.type === "video";
+  const videoSrc = isVideo ? wallpaperConfig?.src : null;
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined" ? window.matchMedia("(max-width: 767px)").matches : false
   );
@@ -63,6 +37,49 @@ export function Desktop() {
     mq.addEventListener("change", h);
     return () => mq.removeEventListener("change", h);
   }, []);
+
+  // Aggressive video play: try on every ready state, retries, and when tab becomes visible
+  useEffect(() => {
+    if (!videoSrc) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const tryPlay = () => {
+      video.muted = true;
+      video.setAttribute("muted", "");
+      video.volume = 0;
+      const p = video.play();
+      if (p && typeof p.then === "function") p.catch(() => { });
+    };
+
+    const events = ["loadstart", "loadedmetadata", "loadeddata", "canplay", "canplaythrough", "playing"];
+    const onReady = () => tryPlay();
+    events.forEach((ev) => video.addEventListener(ev, onReady));
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") tryPlay();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    tryPlay();
+    const raf = requestAnimationFrame(() => tryPlay());
+    const t1 = setTimeout(tryPlay, 100);
+    const t2 = setTimeout(tryPlay, 400);
+    const t3 = setTimeout(tryPlay, 1200);
+    const t4 = setTimeout(tryPlay, 2500);
+    const t5 = setTimeout(tryPlay, 5000);
+
+    return () => {
+      events.forEach((ev) => video.removeEventListener(ev, onReady));
+      document.removeEventListener("visibilitychange", onVisibility);
+      cancelAnimationFrame(raf);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+      clearTimeout(t5);
+    };
+  }, [videoSrc]);
 
   useGSAP(() => {
     gsap.from(".desktop-icon", {
@@ -138,23 +155,32 @@ export function Desktop() {
       style={{
         paddingLeft: "env(safe-area-inset-left)",
         paddingRight: "env(safe-area-inset-right)",
+        backgroundColor: isVideo ? "transparent" : undefined,
       }}
     >
-      {/* Wallpaper: gradient or image from Settings */}
-      <div
-        className="absolute inset-0 bg-[#2d3a5e] transition-opacity duration-300"
-        style={
-          isGradient
-            ? { background: DEFAULT_GRADIENT }
-            : {
-              backgroundImage: wallpaperConfig.src ? `url(${wallpaperConfig.src})` : undefined,
-              backgroundColor: "#2d3a5e",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }
-        }
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/10 pointer-events-none" />
+      {isVideo && videoSrc ? (
+        <video
+          ref={videoRef}
+          key={videoSrc}
+          src={videoSrc}
+          className="absolute inset-0 w-full h-full object-cover"
+          loop
+          muted
+          playsInline
+          autoPlay
+          preload="auto"
+          aria-hidden
+        />
+      ) : null}
+      {!isVideo && wallpaperConfig?.src ? (
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${wallpaperConfig.src})` }}
+        />
+      ) : null}
+      {!wallpaperConfig?.src ? (
+        <div className="absolute inset-0 bg-black" />
+      ) : null}
 
       {/* Center welcome text - each letter animates on hover */}
       <div
@@ -201,19 +227,21 @@ export function Desktop() {
         ))}
       </div>
 
-      {/* Right: Project folders stacked */}
-      <div className="absolute top-24 sm:top-28 md:top-32 right-4 sm:right-6 md:right-8 lg:right-12 flex flex-col gap-4 sm:gap-6">
-        {desktopItems.slice(1, 4).map((item) => (
-          <DesktopIcon
-            key={item.id}
-            icon={item.icon}
-            iconImage={item.iconImage}
-            label={item.title}
-            onDoubleClick={() => openApp(item.appId)}
-            onOpen={isMobile ? () => openApp(item.appId) : undefined}
-          />
-        ))}
-      </div>
+      {/* Right: optional desktop icons (e.g. project shortcuts when you add them) */}
+      {desktopItems.length > 1 && (
+        <div className="absolute top-24 sm:top-28 md:top-32 right-4 sm:right-6 md:right-8 lg:right-12 flex flex-col gap-4 sm:gap-6">
+          {desktopItems.slice(1).map((item) => (
+            <DesktopIcon
+              key={item.id}
+              icon={item.icon}
+              iconImage={item.iconImage}
+              label={item.title}
+              onDoubleClick={() => openApp(item.appId)}
+              onOpen={isMobile ? () => openApp(item.appId) : undefined}
+            />
+          ))}
+        </div>
+      )}
 
       <WindowManager />
     </div>

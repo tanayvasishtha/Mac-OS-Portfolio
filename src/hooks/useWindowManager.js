@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
 
-const DEFAULT_POSITION = { top: 80, left: 100 };
-const OFFSET = 20;
+const DEFAULT_POSITION = { top: 60, left: 80 };
+const OFFSET = 28;
+const DEFAULT_SIZE = { width: 700, height: 520 };
+const WINDOW_Z_BASE = 60;
 
 export function useWindowManager() {
   const [openWindows, setOpenWindows] = useState([]);
@@ -16,7 +18,7 @@ export function useWindowManager() {
   const openWindow = useCallback((id, title, component) => {
     setOpenWindows((prev) => {
       const exists = prev.find((w) => w.id === id);
-      const nextZ = prev.length === 0 ? 10 : Math.max(...prev.map((w) => w.zIndex), 0) + 1;
+      const nextZ = prev.length === 0 ? WINDOW_Z_BASE : Math.max(...prev.map((w) => w.zIndex), WINDOW_Z_BASE) + 1;
       if (exists) {
         return prev.map((w) =>
           w.id === id ? { ...w, isMinimized: false, zIndex: nextZ } : w
@@ -33,7 +35,7 @@ export function useWindowManager() {
           isMaximized: false,
           zIndex: nextZ,
           position,
-          size: { width: 500, height: 400 },
+          size: DEFAULT_SIZE,
         },
       ];
     });
@@ -63,7 +65,7 @@ export function useWindowManager() {
 
   const focusWindow = useCallback((id) => {
     setOpenWindows((prev) => {
-      const maxZ = Math.max(...prev.map((w) => w.zIndex), 0);
+      const maxZ = Math.max(...prev.map((w) => w.zIndex), WINDOW_Z_BASE);
       const newZ = maxZ + 1;
       setNextZIndex(newZ + 1);
       return prev.map((w) =>
@@ -80,7 +82,7 @@ export function useWindowManager() {
       return newZ;
     });
     setOpenWindows((prev) => {
-      const maxZ = Math.max(...prev.map((w) => w.zIndex), 0);
+      const maxZ = Math.max(...prev.map((w) => w.zIndex), WINDOW_Z_BASE);
       const z = maxZ + 1;
       return prev.map((w) =>
         w.id === id ? { ...w, isMinimized: false, zIndex: z } : w

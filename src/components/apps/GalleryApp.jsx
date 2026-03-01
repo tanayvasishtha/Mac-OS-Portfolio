@@ -3,7 +3,6 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 const galleryImages = [
-  { id: "1", src: "/images/project-1.png", alt: "Project 1" },
   { id: "2", src: "/images/blog2.png", alt: "Blog" },
   { id: "3", src: "/images/photos.png", alt: "Photos" },
   { id: "4", src: "/images/image.png", alt: "Image" },
