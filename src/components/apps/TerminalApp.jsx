@@ -439,7 +439,7 @@ export function TerminalApp() {
       `}</style>
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto overflow-x-auto p-4 min-h-0"
+        className="flex-1 overflow-y-auto overflow-x-auto p-4 pb-6 min-h-0"
         style={{ scrollBehavior: "smooth" }}
       >
         {lines.map((line) => (
@@ -452,7 +452,7 @@ export function TerminalApp() {
           </div>
         ))}
       </div>
-      <div className="border-t border-white/10 p-2 flex items-center gap-1 shrink-0 min-h-[40px]">
+      <div className="border-t border-white/10 bg-[#1c1c1e] p-2 flex items-center gap-1 shrink-0 min-h-[40px]">
         <span className="text-amber-200/90 shrink-0 select-none">{PROMPT}</span>
         {passwordMode ? (
           <span className="text-gray-400 flex-1 min-w-0">{password.replace(/./g, "•")}</span>
