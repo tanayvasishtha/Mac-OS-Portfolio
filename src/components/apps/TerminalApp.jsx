@@ -227,7 +227,8 @@ export function TerminalApp() {
       const rect = track.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const ratio = x / rect.width;
-      el.scrollLeft = ratio * (hScroll.scrollWidth - hScroll.clientWidth);
+      const targetLeft = ratio * (hScroll.scrollWidth - hScroll.clientWidth);
+      el.scrollTo({ left: targetLeft, behavior: "smooth" });
     },
     [hScroll]
   );
@@ -560,6 +561,7 @@ export function TerminalApp() {
             style={{
               width: `${Math.max(10, (hScroll.clientWidth / hScroll.scrollWidth) * 100)}%`,
               marginLeft: `${(hScroll.scrollLeft / hScroll.scrollWidth) * 100}%`,
+              transition: "margin-left 120ms ease-out, width 120ms ease-out",
             }}
             onMouseDown={handleHScrollThumbMouseDown}
           />
