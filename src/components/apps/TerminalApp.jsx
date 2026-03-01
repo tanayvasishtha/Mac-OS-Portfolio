@@ -180,15 +180,6 @@ export function TerminalApp() {
     if (focusedId === "terminal") inputRef.current?.focus();
   }, [focusedId]);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (el) {
-      el.scrollTop = el.scrollHeight;
-      const t = setTimeout(syncHScroll, 50);
-      return () => clearTimeout(t);
-    }
-  }, [lines, syncHScroll]);
-
   const syncHScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -201,18 +192,30 @@ export function TerminalApp() {
 
   useEffect(() => {
     const el = scrollRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+      const t = setTimeout(syncHScroll, 50);
+      return () => clearTimeout(t);
+    }
+  }, [lines, syncHScroll]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
     if (!el) return;
     syncHScroll();
     const onScroll = () => syncHScroll();
     const onResize = () => syncHScroll();
     el.addEventListener("scroll", onScroll);
     window.addEventListener("resize", onResize);
-    const ro = new ResizeObserver(syncHScroll);
-    ro.observe(el);
+    let ro;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(syncHScroll);
+      ro.observe(el);
+    }
     return () => {
       el.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      ro.disconnect();
+      if (ro) ro.disconnect();
     };
   }, [lines, syncHScroll]);
 
