@@ -23,5 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-# Large video wallpapers (exceed GitHub 100MB limit)
-public/wallpapers/VidWallpaper1.mp4
