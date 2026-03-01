@@ -1,3 +1,7 @@
+/**
+ * App shell: desktop, dock, launchpad, window manager, wallpaper state.
+ * Feature index (where to find each feature): see FEATURES.md in project root.
+ */
 import { useState, useMemo, useCallback, lazy, Suspense, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
