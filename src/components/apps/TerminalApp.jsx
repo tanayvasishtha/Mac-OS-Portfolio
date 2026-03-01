@@ -159,6 +159,9 @@ export function TerminalApp() {
   const inputRef = useRef(null);
   const didInit = useRef(false);
   const lineIdRef = useRef(0);
+  const [hScroll, setHScroll] = useState({ scrollLeft: 0, scrollWidth: 0, clientWidth: 0 });
+  const hScrollTrackRef = useRef(null);
+  const dragStartRef = useRef(null);
 
   useEffect(() => {
     if (didInit.current) return;
@@ -178,8 +181,74 @@ export function TerminalApp() {
   }, [focusedId]);
 
   useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [lines]);
+    const el = scrollRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+      const t = setTimeout(syncHScroll, 50);
+      return () => clearTimeout(t);
+    }
+  }, [lines, syncHScroll]);
+
+  const syncHScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setHScroll({
+      scrollLeft: el.scrollLeft,
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+    });
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    syncHScroll();
+    const onScroll = () => syncHScroll();
+    const onResize = () => syncHScroll();
+    el.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", onResize);
+    const ro = new ResizeObserver(syncHScroll);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      ro.disconnect();
+    };
+  }, [lines, syncHScroll]);
+
+  const handleHScrollTrackClick = useCallback(
+    (e) => {
+      const el = scrollRef.current;
+      const track = hScrollTrackRef.current;
+      if (!el || !track || hScroll.scrollWidth <= hScroll.clientWidth) return;
+      const rect = track.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const ratio = x / rect.width;
+      el.scrollLeft = ratio * (hScroll.scrollWidth - hScroll.clientWidth);
+    },
+    [hScroll]
+  );
+
+  const handleHScrollThumbMouseDown = useCallback((e) => {
+    e.preventDefault();
+    dragStartRef.current = { x: e.clientX, scrollLeft: scrollRef.current?.scrollLeft ?? 0 };
+    const onMove = (e2) => {
+      if (!dragStartRef.current || !scrollRef.current) return;
+      const el = scrollRef.current;
+      const dx = e2.clientX - dragStartRef.current.x;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (maxScroll <= 0) return;
+      const newLeft = Math.max(0, Math.min(maxScroll, dragStartRef.current.scrollLeft + dx));
+      el.scrollLeft = newLeft;
+      dragStartRef.current = { x: e2.clientX, scrollLeft: newLeft };
+    };
+    const onUp = () => {
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+    };
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  }, []);
 
   const runCommand = useCallback(
     (cmd) => {
@@ -436,10 +505,11 @@ export function TerminalApp() {
         .terminal-app .terminal-banner-html .index { color: #9ca3af; }
         .terminal-app .terminal-banner-html .color2 { color: #34d399; }
         .terminal-app .terminal-banner-html .command { color: #fbbf24; }
+        .terminal-app .terminal-output::-webkit-scrollbar:horizontal { height: 0; display: none; }
       `}</style>
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden p-4 min-h-0"
+        className="terminal-output flex-1 min-w-0 overflow-y-auto overflow-x-auto p-4 min-h-0"
         style={{ scrollBehavior: "smooth" }}
       >
         {lines.map((line) => (
@@ -472,6 +542,27 @@ export function TerminalApp() {
           />
         )}
       </div>
+      {hScroll.scrollWidth > hScroll.clientWidth && (
+        <div
+          ref={hScrollTrackRef}
+          role="scrollbar"
+          aria-orientation="horizontal"
+          aria-valuenow={hScroll.scrollLeft}
+          aria-valuemin={0}
+          aria-valuemax={Math.max(0, hScroll.scrollWidth - hScroll.clientWidth)}
+          className="shrink-0 h-2 flex items-center px-1 bg-[#1c1c1e] border-t border-white/5 cursor-pointer"
+          onClick={handleHScrollTrackClick}
+        >
+          <div
+            className="h-1.5 rounded-full bg-white/30 hover:bg-white/40 cursor-grab active:cursor-grabbing flex-shrink-0"
+            style={{
+              width: `${Math.max(10, (hScroll.clientWidth / hScroll.scrollWidth) * 100)}%`,
+              marginLeft: `${(hScroll.scrollLeft / hScroll.scrollWidth) * 100}%`,
+            }}
+            onMouseDown={handleHScrollThumbMouseDown}
+          />
+        </div>
+      )}
     </div>
   );
 }
